@@ -11,15 +11,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.plus.Plus;
+
 
 /**
  * Created by kevinwetzel on 28.05.16.
  */
-public class BaseCompatActivity extends AppCompatActivity{
+public class BaseCompatActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,
+                                                                     GoogleApiClient.ConnectionCallbacks{
 
     private static final String TAG = BaseCompatActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 9001;
@@ -38,21 +43,22 @@ public class BaseCompatActivity extends AppCompatActivity{
         baseCompatActivityContext = this;
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestProfile()
+                .requestScopes(new Scope(Scopes.PLUS_LOGIN),new Scope(Scopes.PLUS_ME))
+                .build();
 
         // Build a GoogleApiClient with access to the Google Sign-In API and the
         // options specified by gso.
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult connectionResult) {
-                        finish();
-                        Intent intent = new Intent(baseCompatActivityContext, LoginActivity.class);
-                        startActivity(intent);
+       // mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this /* FragmentActivity */, this).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
 
-                    }
-                } /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */,
+                        this /* OnConnectionFailedListener */)
+                .addApi(Plus.API)
+                .addScope(new Scope(Scopes.PLUS_LOGIN))
+                .addScope(new Scope(Scopes.PLUS_ME))
                 .build();
     }
 
@@ -131,5 +137,23 @@ public class BaseCompatActivity extends AppCompatActivity{
 
     protected GoogleSignInAccount getAcct() {
         return acct;
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        finish();
+        Intent intent = new Intent(baseCompatActivityContext, LoginActivity.class);
+        startActivity(intent);
+
     }
 }

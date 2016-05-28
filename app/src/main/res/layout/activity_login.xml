@@ -27,7 +27,7 @@
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/bt_sign_in"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="32dp"
@@ -46,7 +46,7 @@
             android:layout_marginTop="88dp" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Store locally"
             android:id="@+id/bt_store_locally"

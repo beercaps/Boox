@@ -2,6 +2,7 @@ package com.boox.kevinwetzel.boox;
 
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,12 +28,9 @@ import com.google.android.gms.common.api.Status;
 public class LoginActivity extends BaseCompatActivity {
 
     public  static final String PARCEL_GOOGLE_SIGN_IN_ACCOUNT = "com.boox.LoginActivity.GoogleSignInAccount";
-    public  static final String PARCEL_GOOGLE_API_CLIENT = "com.boox.LoginActivity.GoogleApiClient";
     private static final String TAG = LoginActivity.class.getSimpleName();
 
 
-
-    private GoogleApiClient mGoogleApiClient;
     private SignInButton bt_signIn;
 
 
@@ -88,6 +86,7 @@ public class LoginActivity extends BaseCompatActivity {
 
         }else{
             Log.d(TAG, "handleSignInResult: nicht erfolgreich eingeloggt");
+            Snackbar.make(findViewById(R.id.bt_sign_in), "LogIn failed! Please try again", Snackbar.LENGTH_LONG).show();
             //nicht erfolgreich eingelogt!
         }
 

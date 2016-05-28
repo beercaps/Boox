@@ -17,12 +17,16 @@ import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 
 
 public class MainActivity extends BaseCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener{
 
 
 
@@ -49,6 +53,7 @@ public class MainActivity extends BaseCompatActivity
         Log.d(TAG, "onCreate: "+ acct.getId());
         Log.d(TAG, "onCreate: "+ acct.getEmail());
         Log.d(TAG, "onCreate: "+ acct.getDisplayName());
+        Log.d(TAG, "onCreate"+ acct.getPhotoUrl());
 
 
 
@@ -141,5 +146,33 @@ public class MainActivity extends BaseCompatActivity
     }
 
 
+    @Override
+    public void onConnected(Bundle bundle) {
 
+        if (Plus.PeopleApi.getCurrentPerson(getmGoogleApiClient()) != null) {
+            Person currentPerson = Plus.PeopleApi.getCurrentPerson(getmGoogleApiClient());
+            String personName = currentPerson.getDisplayName();
+            String personPhoto = currentPerson.getImage().getUrl();
+            String personGooglePlusProfile = currentPerson.getUrl();
+            Person.Cover.CoverPhoto personBackground = currentPerson.getCover().getCoverPhoto();
+            String background = personBackground.getUrl();
+
+            Log.d(TAG, "onConnected: "+ personName);
+            Log.d(TAG, "onConnected: "+ personPhoto);
+            Log.d(TAG, "onConnected: "+ personGooglePlusProfile);
+            Log.d(TAG, "onConnected: "+ background);
+
+        }
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
 }

@@ -15,18 +15,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
 
     private static final String TAG = "MainActivity";
-    private GoogleSignInAccount acct;
+  //  private GoogleSignInAccount acct;
     private TextView tv_google_user_name;
     private TextView tv_google_user_mail;
+    private  GoogleSignInAccount acct;
 
 
     @Override
@@ -38,8 +42,8 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        //Bundle bundle  =  getIntent().getParcelableExtra(LoginActivity.PARCEL_GOOGLE_SIGN_IN_ACCOUNT);
-       //acct = bundle.getParcelable(LoginActivity.PARCEL_GOOGLE_SIGN_IN_ACCOUNT);
+       // Bundle bundle  =  getIntent().getParcelableExtra(LoginActivity.PARCEL_GOOGLE_SIGN_IN_ACCOUNT);
+       //‚ acct = bundle.getParcelable(LoginActivity.PARCEL_GOOGLE_SIGN_IN_ACCOUNT);
         acct = getIntent().getParcelableExtra(LoginActivity.PARCEL_GOOGLE_SIGN_IN_ACCOUNT);
 
         Log.d(TAG, "onCreate: "+ acct.getId());
@@ -101,6 +105,10 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        switch (id){
+            case R.id.action_sign_out: signOut(); break;
+        }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -133,6 +141,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
 
 }

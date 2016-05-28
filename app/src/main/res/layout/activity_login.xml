@@ -54,16 +54,6 @@
             android:layout_below="@+id/tv_locally"
             android:layout_alignStart="@+id/bt_sign_in" />
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sign Out"
-            android:id="@+id/bt_sign_out"
-            android:layout_alignParentBottom="true"
-            android:layout_toStartOf="@+id/tv_login_google"
-            android:layout_marginBottom="20dp" />
-
     </RelativeLayout>
 
 

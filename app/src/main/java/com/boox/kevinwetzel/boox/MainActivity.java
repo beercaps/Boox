@@ -109,10 +109,8 @@ public class MainActivity extends BaseCompatActivity
             case R.id.action_sign_out: signOut(); break;
         }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
+
 
         return super.onOptionsItemSelected(item);
     }

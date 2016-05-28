@@ -35,7 +35,7 @@ public class LoginActivity extends BaseCompatActivity {
     private GoogleApiClient mGoogleApiClient;
     private SignInButton bt_signIn;
 
-    private Button   bt_sign_out;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,6 @@ public class LoginActivity extends BaseCompatActivity {
         //----------- START initialize widgets--------------
 
         bt_signIn = (SignInButton) findViewById(R.id.bt_sign_in);
-        bt_sign_out = (Button) findViewById(R.id.bt_sign_out);
         //-----------END initialize widgets--------------
 
 
@@ -62,12 +61,6 @@ public class LoginActivity extends BaseCompatActivity {
             }
         });
 
-        bt_sign_out.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signOut();
-            }
-        });
 
 
     }

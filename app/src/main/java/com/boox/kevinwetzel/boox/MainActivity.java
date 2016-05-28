@@ -13,16 +13,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.auth.api.Auth;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+
+import java.net.URI;
 
 
 public class MainActivity extends BaseCompatActivity
@@ -31,7 +32,7 @@ public class MainActivity extends BaseCompatActivity
 
 
     private static final String TAG = "MainActivity";
-  //  private GoogleSignInAccount acct;
+
     private TextView tv_google_user_name;
     private TextView tv_google_user_mail;
     private  GoogleSignInAccount acct;
@@ -45,9 +46,6 @@ public class MainActivity extends BaseCompatActivity
         setSupportActionBar(toolbar);
 
 
-
-       // Bundle bundle  =  getIntent().getParcelableExtra(LoginActivity.PARCEL_GOOGLE_SIGN_IN_ACCOUNT);
-       //‚ acct = bundle.getParcelable(LoginActivity.PARCEL_GOOGLE_SIGN_IN_ACCOUNT);
         acct = getIntent().getParcelableExtra(LoginActivity.PARCEL_GOOGLE_SIGN_IN_ACCOUNT);
 
         Log.d(TAG, "onCreate: "+ acct.getId());
@@ -156,6 +154,13 @@ public class MainActivity extends BaseCompatActivity
             String personGooglePlusProfile = currentPerson.getUrl();
             Person.Cover.CoverPhoto personBackground = currentPerson.getCover().getCoverPhoto();
             String background = personBackground.getUrl();
+
+
+            personPhoto = personPhoto.substring(0,personPhoto.length()-2) + "150"; //change the size of the picture to 100
+            new DownloadImageAsynctaskImageViewRound((ImageView)findViewById(R.id.iv_google_user_pic)).execute(personPhoto);
+            new DownloadImageAsyncTaskLinearLayout((LinearLayout) findViewById(R.id.ll_header)).execute(background);
+
+
 
             Log.d(TAG, "onConnected: "+ personName);
             Log.d(TAG, "onConnected: "+ personPhoto);

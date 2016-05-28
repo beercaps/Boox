@@ -57,9 +57,11 @@ public class BaseCompatActivity extends AppCompatActivity implements GoogleApiCl
                 .enableAutoManage(this /* FragmentActivity */,
                         this /* OnConnectionFailedListener */)
                 .addApi(Plus.API)
-                .addScope(new Scope(Scopes.PLUS_LOGIN))
-                .addScope(new Scope(Scopes.PLUS_ME))
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addConnectionCallbacks(this)
                 .build();
+
+
     }
 
 
@@ -118,7 +120,7 @@ public class BaseCompatActivity extends AppCompatActivity implements GoogleApiCl
                     @Override
                     public void onResult(Status status) {
                         // [START_EXCLUDE]
-                        Log.d(TAG, "onResult: Sign out");;
+                        Log.d(TAG, "onResult: Sign out");
                         finish();
                         Intent intent = new Intent(baseCompatActivityContext, LoginActivity.class);
                         startActivity(intent);
@@ -141,6 +143,7 @@ public class BaseCompatActivity extends AppCompatActivity implements GoogleApiCl
 
     @Override
     public void onConnected(Bundle bundle) {
+        Log.d(TAG, "onConnected: ");
 
     }
 

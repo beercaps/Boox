@@ -149,23 +149,23 @@ public class MainActivity extends BaseCompatActivity
 
         if (Plus.PeopleApi.getCurrentPerson(getmGoogleApiClient()) != null) {
             Person currentPerson = Plus.PeopleApi.getCurrentPerson(getmGoogleApiClient());
-            String personName = currentPerson.getDisplayName();
-            String personPhoto = currentPerson.getImage().getUrl();
-            String personGooglePlusProfile = currentPerson.getUrl();
-            Person.Cover.CoverPhoto personBackground = currentPerson.getCover().getCoverPhoto();
-            String background = personBackground.getUrl();
 
 
-            personPhoto = personPhoto.substring(0,personPhoto.length()-2) + "150"; //change the size of the picture to 100
-            new DownloadImageAsynctaskImageViewRound((ImageView)findViewById(R.id.iv_google_user_pic)).execute(personPhoto);
-            new DownloadImageAsyncTaskLinearLayout((LinearLayout) findViewById(R.id.ll_header)).execute(background);
+            if (currentPerson.hasImage()){
+                String personPhoto = currentPerson.getImage().getUrl();
+                personPhoto = personPhoto.substring(0,personPhoto.length()-2) + "150"; //change the size of the picture to 100
+                new DownloadImageAsynctaskImageViewRound((ImageView)findViewById(R.id.iv_google_user_pic)).execute(personPhoto);
+            }
+            if (currentPerson.hasCover()){
+                Log.d(TAG, "onConnected: cover");
+                Person.Cover.CoverPhoto personBackground = currentPerson.getCover().getCoverPhoto();
+                String background = personBackground.getUrl();
+                new DownloadImageAsyncTaskLinearLayout((LinearLayout) findViewById(R.id.ll_header)).execute(background);
+            }
+            if (currentPerson.hasDisplayName()){
+                String personName = currentPerson.getDisplayName();
+            }
 
-
-
-            Log.d(TAG, "onConnected: "+ personName);
-            Log.d(TAG, "onConnected: "+ personPhoto);
-            Log.d(TAG, "onConnected: "+ personGooglePlusProfile);
-            Log.d(TAG, "onConnected: "+ background);
 
         }
 

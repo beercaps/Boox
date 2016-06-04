@@ -212,7 +212,7 @@ MERGED from [com.android.support:support-v4:23.4.0] D:\Android\Entwicklungen\Boo
 	android:allowBackup
 		ADDED from D:\Android\Entwicklungen\Boox\app\src\main\AndroidManifest.xml:13:9-35
 	android:icon
-		ADDED from D:\Android\Entwicklungen\Boox\app\src\main\AndroidManifest.xml:14:9-42
+		ADDED from D:\Android\Entwicklungen\Boox\app\src\main\AndroidManifest.xml:14:9-45
 	android:theme
 		ADDED from D:\Android\Entwicklungen\Boox\app\src\main\AndroidManifest.xml:17:9-40
 activity#com.boox.kevinwetzel.boox.LoginActivity

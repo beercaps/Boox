@@ -1,29 +1,38 @@
 package com.boox.kevinwetzel.boox;
 
 import android.os.Bundle;
+import android.util.Log;
+
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
-import java.net.URI;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 
 public class MainActivity extends BaseCompatActivity
@@ -36,6 +45,7 @@ public class MainActivity extends BaseCompatActivity
     private TextView tv_google_user_name;
     private TextView tv_google_user_mail;
     private  GoogleSignInAccount acct;
+    private RequestQueue mQueue;
 
 
     @Override
@@ -52,7 +62,6 @@ public class MainActivity extends BaseCompatActivity
         Log.d(TAG, "onCreate: "+ acct.getEmail());
         Log.d(TAG, "onCreate: "+ acct.getDisplayName());
         Log.d(TAG, "onCreate"+ acct.getPhotoUrl());
-
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -82,7 +91,11 @@ public class MainActivity extends BaseCompatActivity
 
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mQueue = CustomVolleyRequestQueue.getInstance(this.getApplicationContext()).getRequestQueue();
+    }
 
     @Override
     public void onBackPressed() {
@@ -153,7 +166,7 @@ public class MainActivity extends BaseCompatActivity
 
             if (currentPerson.hasImage()){
                 String personPhoto = currentPerson.getImage().getUrl();
-                personPhoto = personPhoto.substring(0,personPhoto.length()-2) + "150"; //change the size of the picture to 100
+                personPhoto = personPhoto.substring(0,personPhoto.length()-2) + "150"; //change the size of the picture to 150
                 new DownloadImageAsynctaskImageViewRound((ImageView)findViewById(R.id.iv_google_user_pic)).execute(personPhoto);
             }
             if (currentPerson.hasCover()){
@@ -167,9 +180,41 @@ public class MainActivity extends BaseCompatActivity
             }
 
 
+            String url = "https://www.googleapis.com/books/v1/volumes/zyTCAlFPjgYC?key="+ getString(R.string.books_api);
+
+            CustomJSONObjectRequest jsonRequest = new CustomJSONObjectRequest(Request.Method.GET,
+                    url, new JSONObject(), new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONObject vol = response.getJSONObject("volumeInfo");
+                        Log.d(TAG, "onResponse: selflink "+ response.get("selfLink"));
+
+                        Log.d(TAG, "onResponse: title: "+ vol.getString("title"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    });
+            mQueue.add(jsonRequest);
+
+
         }
 
+
+       
+       
+
+
     }
+    
+
 
     @Override
     public void onConnectionSuspended(int i) {

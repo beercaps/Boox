@@ -29,6 +29,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.services.books.Books;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -98,6 +101,15 @@ public class MainActivity extends BaseCompatActivity
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        super.onStop();
+        if (mQueue != null) {
+            mQueue.cancelAll(TAG);
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -160,6 +172,7 @@ public class MainActivity extends BaseCompatActivity
     @Override
     public void onConnected(Bundle bundle) {
 
+
         if (Plus.PeopleApi.getCurrentPerson(getmGoogleApiClient()) != null) {
             Person currentPerson = Plus.PeopleApi.getCurrentPerson(getmGoogleApiClient());
 
@@ -180,17 +193,20 @@ public class MainActivity extends BaseCompatActivity
             }
 
 
-            String url = "https://www.googleapis.com/books/v1/volumes/zyTCAlFPjgYC?key="+ getString(R.string.books_api);
+            //String url = "https://www.googleapis.com/books/v1/volumes/zyTCAlFPjgYC?key="+ getString(R.string.books_api);
+            String url ="https://www.googleapis.com/books/v1/mylibrary/bookshelves/0/volumes?access_token="+acct.getIdToken();
 
             CustomJSONObjectRequest jsonRequest = new CustomJSONObjectRequest(Request.Method.GET,
                     url, new JSONObject(), new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
+                        Log.d(TAG, "shelves"+ response.toString());
                         JSONObject vol = response.getJSONObject("volumeInfo");
-                        Log.d(TAG, "onResponse: selflink "+ response.get("selfLink"));
+                       // Log.d(TAG, "onResponse: selflink "+ response.get("selfLink"));
 
-                        Log.d(TAG, "onResponse: title: "+ vol.getString("title"));
+                      //  Log.d(TAG, "onResponse: title: "+ vol.getString("title"));
+                       // Log.d(TAG, "Access token "+ acct.getIdToken());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -201,7 +217,10 @@ public class MainActivity extends BaseCompatActivity
                         public void onErrorResponse(VolleyError error) {
 
                         }
-                    });
+                    }
+                    ,acct.getIdToken());
+            jsonRequest.setTag(TAG);
+
             mQueue.add(jsonRequest);
 
 

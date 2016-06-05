@@ -46,7 +46,9 @@ public class BaseCompatActivity extends AppCompatActivity implements GoogleApiCl
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestProfile()
-                .requestScopes(new Scope(Scopes.PLUS_LOGIN),new Scope(Scopes.PLUS_ME))
+                .requestScopes(new Scope(Scopes.PLUS_LOGIN),new Scope(Scopes.PLUS_ME),new Scope("https://www.googleapis.com/auth/books"))
+                .requestIdToken(getString(R.string.oauth_client_id))
+              //  .requestIdToken(getString(R.string.oauth_client_key))
                 .build();
 
         // Build a GoogleApiClient with access to the Google Sign-In API and the

@@ -35,6 +35,7 @@ public class MainActivity extends BaseCompatActivity
     private TextView tv_google_user_mail;
     private  GoogleSignInAccount acct;
     private RequestQueue mQueue;
+    private NavigationView navigationView;
 
 
     @Override
@@ -68,7 +69,7 @@ public class MainActivity extends BaseCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         View header = navigationView.getHeaderView(0);
@@ -154,6 +155,12 @@ public class MainActivity extends BaseCompatActivity
         return true;
     }
 
+    public boolean addNewNavigationViewItem(NavigationView navigationView, int id, String itemName){
+        Menu menu = navigationView.getMenu();
+        menu.add(R.id.group2,id, Menu.NONE, itemName );
+
+        return true;
+    }
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -182,6 +189,8 @@ public class MainActivity extends BaseCompatActivity
 
           new BooksFullSearchAsync(JacksonFactory.getDefaultInstance(), "Harry Potter").execute();
           new BooksGetBookshelvesAsync(JacksonFactory.getDefaultInstance(), super.getAccess_token()).execute();
+            addNewNavigationViewItem(navigationView,1, "TEST");
+
         }
 
 

@@ -46,7 +46,10 @@ public class BooksGetBookshelvesAsync extends AsyncTask<Void, Void, Void> {
         for (Bookshelf bookshelf: mlib.getItems()) {
             Log.d(TAG, "queryGoogleBooks: mylib Title "+ bookshelf.getTitle());
             Log.d(TAG, "queryGoogleBooks: mylib ID "+ bookshelf.getId());
-            Log.d(TAG, "queryGoogleBooks: mylib Count "+ bookshelf.getVolumeCount());
+            if (bookshelf.getVolumeCount() > 0){
+                Log.d(TAG, "queryGoogleBooks: mylib Count "+ bookshelf.getVolumeCount());
+
+            }
             Log.d(TAG, "queryGoogleBooks: mylib SelfLink "+ bookshelf.getSelfLink());
         }
 

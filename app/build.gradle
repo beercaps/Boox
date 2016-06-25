@@ -20,7 +20,9 @@ android {
         }
     }
 }
-
+repositories {
+    mavenCentral()
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
@@ -30,7 +32,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-auth:8.3.0'
     compile 'com.google.android.gms:play-services:8.3.0'
     compile 'com.mcxiaoke.volley:library:1.0.19'
-    // http://mvnrepository.com/artifact/com.google.apis/google-api-services-books
-   // compile group: 'com.google.apis', name: 'google-api-services-books', version: 'v1-rev84-1.22.0'
+    compile 'com.google.apis:google-api-services-books:v1-rev84-1.22.0'
+
 
 }

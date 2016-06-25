@@ -1,41 +1,27 @@
 package com.boox.kevinwetzel.boox;
 
 import android.os.Bundle;
-import android.util.Log;
-
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
-
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.services.books.Books;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.google.api.client.json.jackson2.JacksonFactory;
 
 
 public class MainActivity extends BaseCompatActivity
@@ -193,37 +179,9 @@ public class MainActivity extends BaseCompatActivity
             }
 
 
-            //String url = "https://www.googleapis.com/books/v1/volumes/zyTCAlFPjgYC?key="+ getString(R.string.books_api);
-            String url ="https://www.googleapis.com/books/v1/mylibrary/bookshelves/0/volumes?access_token="+acct.getIdToken();
 
-            CustomJSONObjectRequest jsonRequest = new CustomJSONObjectRequest(Request.Method.GET,
-                    url, new JSONObject(), new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        Log.d(TAG, "shelves"+ response.toString());
-                        JSONObject vol = response.getJSONObject("volumeInfo");
-                       // Log.d(TAG, "onResponse: selflink "+ response.get("selfLink"));
-
-                      //  Log.d(TAG, "onResponse: title: "+ vol.getString("title"));
-                       // Log.d(TAG, "Access token "+ acct.getIdToken());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-
-                        }
-                    }
-                    ,acct.getIdToken());
-            jsonRequest.setTag(TAG);
-
-            mQueue.add(jsonRequest);
-
-
+          new BooksFullSearchAsync(JacksonFactory.getDefaultInstance(), "Harry Potter").execute();
+          new BooksGetBookshelvesAsync(JacksonFactory.getDefaultInstance(), super.getAccess_token()).execute();
         }
 
 

@@ -29,10 +29,13 @@ import java.util.Map;
 
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
+
         HashMap<String, String> headers = new HashMap<String, String>();
+      //  headers.put("GET","/resource HTTP/1.1");
         headers.put("Content-Type:","application/json");
-        headers.put("Content-Length:","CONTENT_LENGTH");
-        headers.put("Authorization:",oAuth);
+        headers.put("Authorization:"," Bearer "+oAuth);
+        headers.put("Host:","googleapis.com");
+        Log.d(TAG, "getHeaders: "+ headers.toString());
         return headers;
     }
 

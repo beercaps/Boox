@@ -28,7 +28,9 @@ public class BaseCompatActivity extends AppCompatActivity implements GoogleApiCl
 
     private static final String TAG = BaseCompatActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 9001;
+   // private static final String  BOOKSSCOPE = "oauth2:https://www.googleapis.com/auth/books";
 
+    private static String access_token;
 
     private Context baseCompatActivityContext;
 
@@ -47,8 +49,8 @@ public class BaseCompatActivity extends AppCompatActivity implements GoogleApiCl
                 .requestEmail()
                 .requestProfile()
                 .requestScopes(new Scope(Scopes.PLUS_LOGIN),new Scope(Scopes.PLUS_ME),new Scope("https://www.googleapis.com/auth/books"))
-                .requestIdToken(getString(R.string.oauth_client_id))
-              //  .requestIdToken(getString(R.string.oauth_client_key))
+                //.requestIdToken(getString(R.string.oauth_client_id))
+
                 .build();
 
         // Build a GoogleApiClient with access to the Google Sign-In API and the
@@ -147,6 +149,8 @@ public class BaseCompatActivity extends AppCompatActivity implements GoogleApiCl
     public void onConnected(Bundle bundle) {
         Log.d(TAG, "onConnected: ");
 
+
+
     }
 
     @Override
@@ -160,5 +164,13 @@ public class BaseCompatActivity extends AppCompatActivity implements GoogleApiCl
         Intent intent = new Intent(baseCompatActivityContext, LoginActivity.class);
         startActivity(intent);
 
+    }
+
+    public static String getAccess_token() {
+        return access_token;
+    }
+
+    public static void setAccess_token(String access_token) {
+        BaseCompatActivity.access_token = access_token;
     }
 }

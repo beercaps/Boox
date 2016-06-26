@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.HeaderViewListAdapter;
@@ -160,12 +161,7 @@ public class MainActivity extends BaseCompatActivity
         return true;
     }
 
-    public boolean addNewNavigationViewItem(NavigationView navigationView, int id, String itemName){
-        Menu menu = navigationView.getMenu();
-        menu.add(R.id.group2,id, Menu.NONE, itemName );
 
-        return true;
-    }
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -214,14 +210,19 @@ public class MainActivity extends BaseCompatActivity
         bookshelvesDAO.close();
 
         if (bookshelvesList.size() >0) {
-            Log.d(TAG, "Adding Nav Drawer Items");
             navigationView.getMenu().clear();
+
+            Menu menu = navigationView.getMenu();
+            SubMenu subMenu = menu.addSubMenu("Bookshelves");
+            Log.d(TAG, "Adding Nav Drawer Items");
+
             for (Bookshelf bookshelf : bookshelvesList) {
-                addNewNavigationViewItem(navigationView, bookshelf.getId(), bookshelf.getTitle());
+               subMenu.add(R.id.group2, bookshelf.getId(), Menu.NONE, bookshelf.getTitle() );
             }
             refreshNavigationView();
         }
 }
+
 
     @Override
     public void onConnectionSuspended(int i) {

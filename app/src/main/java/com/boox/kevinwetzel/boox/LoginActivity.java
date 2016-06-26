@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 
+import com.boox.kevinwetzel.boox.databases.BooxDbHelper;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.Scopes;
@@ -74,6 +75,9 @@ public class LoginActivity extends BaseCompatActivity {
             new GenerateAsyncToken(LoginActivity.this,acct.getEmail(), "oauth2:https://www.googleapis.com/auth/books "+ Scopes.PLUS_LOGIN +" "+Scopes.PLUS_ME).execute();
 
             Log.d(TAG, "handleSignInResult: async token "+ BaseCompatActivity.getAccess_token());
+
+            //set db to users DB
+            BooxDbHelper.DB_NAME = acct.getId();
 
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(PARCEL_GOOGLE_SIGN_IN_ACCOUNT, acct);

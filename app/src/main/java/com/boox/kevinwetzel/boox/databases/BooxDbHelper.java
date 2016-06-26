@@ -12,7 +12,7 @@ import android.util.Log;
 public class BooxDbHelper extends SQLiteOpenHelper {
     private static final String TAG = BooxDbHelper.class.getSimpleName();
 
-    public  static  final String DB_NAME = "boox.db";
+    public  static   String DB_NAME = "default";
     public static final int DB_VERSION = 1;
 
     public  static  final String T_BOOKSHELVES = "t_bookshelves";
@@ -67,4 +67,6 @@ public class BooxDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
+
+
 }

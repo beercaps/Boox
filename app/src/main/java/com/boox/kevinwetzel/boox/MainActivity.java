@@ -12,8 +12,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.BaseAdapter;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -74,8 +77,10 @@ public class MainActivity extends BaseCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        fillNavigationDrawer();
 
         View header = navigationView.getHeaderView(0);
         tv_google_user_name = (TextView) header.findViewById(R.id.tv_google_user_name);
@@ -147,20 +152,8 @@ public class MainActivity extends BaseCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        //id for handling navigation drawer
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -202,17 +195,8 @@ public class MainActivity extends BaseCompatActivity
           //new BooksFullSearchAsync(JacksonFactory.getDefaultInstance(), "Harry Potter").execute();
           new BooksGetBookshelvesAsync(JacksonFactory.getDefaultInstance(), super.getAccess_token(), this).execute();
 
-            bookshelvesDAO.open();
-            List<Bookshelf> bookshelvesList = bookshelvesDAO.getAllBookshelves();
-            bookshelvesDAO.close();
 
-            Log.d(TAG, "Adding Nav Drawer Items");
-            // TODO refresh drawer with every open/close
-            //TODO add google userid to database to differentiate between users (additional primary key?)
-            for (Bookshelf bookshelf: bookshelvesList) {
-                addNewNavigationViewItem(navigationView,bookshelf.getId(), bookshelf.getTitle());
-            }
-
+            fillNavigationDrawer();
 
 
         }
@@ -224,7 +208,20 @@ public class MainActivity extends BaseCompatActivity
 
     }
     
+    public void fillNavigationDrawer(){
+        bookshelvesDAO.open();
+        List<Bookshelf> bookshelvesList = bookshelvesDAO.getAllBookshelves();
+        bookshelvesDAO.close();
 
+        if (bookshelvesList.size() >0) {
+            Log.d(TAG, "Adding Nav Drawer Items");
+            navigationView.getMenu().clear();
+            for (Bookshelf bookshelf : bookshelvesList) {
+                addNewNavigationViewItem(navigationView, bookshelf.getId(), bookshelf.getTitle());
+            }
+            refreshNavigationView();
+        }
+}
 
     @Override
     public void onConnectionSuspended(int i) {
@@ -234,5 +231,17 @@ public class MainActivity extends BaseCompatActivity
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
+    }
+
+    private void refreshNavigationView(){
+        for (int i = 0, count = navigationView.getChildCount(); i < count; i++) {
+            final View child = navigationView.getChildAt(i);
+            if (child != null && child instanceof ListView) {
+                final ListView menuView = (ListView) child;
+                final HeaderViewListAdapter adapter = (HeaderViewListAdapter) menuView.getAdapter();
+                final BaseAdapter wrapped = (BaseAdapter) adapter.getWrappedAdapter();
+                wrapped.notifyDataSetChanged();
+            }
+        }
     }
 }

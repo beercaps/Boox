@@ -17,11 +17,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
+import com.boox.kevinwetzel.boox.dao.BookshelvesDAO;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.books.model.Bookshelf;
+
+import java.util.List;
 
 
 public class MainActivity extends BaseCompatActivity
@@ -36,6 +40,7 @@ public class MainActivity extends BaseCompatActivity
     private  GoogleSignInAccount acct;
     private RequestQueue mQueue;
     private NavigationView navigationView;
+    private BookshelvesDAO bookshelvesDAO;
 
 
     @Override
@@ -45,7 +50,7 @@ public class MainActivity extends BaseCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+       bookshelvesDAO = new BookshelvesDAO(this);
         acct = getIntent().getParcelableExtra(LoginActivity.PARCEL_GOOGLE_SIGN_IN_ACCOUNT);
 
         Log.d(TAG, "onCreate: "+ acct.getId());
@@ -124,10 +129,17 @@ public class MainActivity extends BaseCompatActivity
             case R.id.action_sign_out: signOut(); break;
         }
 
-
-
-
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void signOut() {
+        Menu navView = navigationView.getMenu();
+        navView.clear();
+       // TODO reset menu (reinflate? refresh?)
+        super.signOut();
+
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -187,9 +199,21 @@ public class MainActivity extends BaseCompatActivity
 
 
 
-          new BooksFullSearchAsync(JacksonFactory.getDefaultInstance(), "Harry Potter").execute();
-          new BooksGetBookshelvesAsync(JacksonFactory.getDefaultInstance(), super.getAccess_token()).execute();
-            addNewNavigationViewItem(navigationView,1, "TEST");
+          //new BooksFullSearchAsync(JacksonFactory.getDefaultInstance(), "Harry Potter").execute();
+          new BooksGetBookshelvesAsync(JacksonFactory.getDefaultInstance(), super.getAccess_token(), this).execute();
+
+            bookshelvesDAO.open();
+            List<Bookshelf> bookshelvesList = bookshelvesDAO.getAllBookshelves();
+            bookshelvesDAO.close();
+
+            Log.d(TAG, "Adding Nav Drawer Items");
+            // TODO refresh drawer with every open/close
+            //TODO add google userid to database to differentiate between users (additional primary key?)
+            for (Bookshelf bookshelf: bookshelvesList) {
+                addNewNavigationViewItem(navigationView,bookshelf.getId(), bookshelf.getTitle());
+            }
+
+
 
         }
 

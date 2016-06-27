@@ -24,14 +24,14 @@ public class BookshelvesDAO {
     private BooxDbHelper booxDbHelper;
 
     private String[] columns = {
-            BooxDbHelper.C_ID,
-            BooxDbHelper.C_TITLE,
-            BooxDbHelper.C_ACCESS,
-            BooxDbHelper.C_DESCRIPTION,
-            BooxDbHelper.C_CREATED,
-            BooxDbHelper.C_UPDATED,
-            BooxDbHelper.C_SELFLINK,
-            BooxDbHelper.C_VOLUME_COUNT};
+            BooxDbHelper.C_BOOKSHELVES_ID,
+            BooxDbHelper.C_BOOKSHELVES_TITLE,
+            BooxDbHelper.C_BOOKSHELVES_ACCESS,
+            BooxDbHelper.C_BOOKSHELVES_DESCRIPTION,
+            BooxDbHelper.C_BOOKSHELVES_CREATED,
+            BooxDbHelper.C_BOOKSHELVES_UPDATED,
+            BooxDbHelper.C_BOOKSHELVES_SELFLINK,
+            BooxDbHelper.C_BOOKSHELVES_VOLUME_COUNT};
 
     public BookshelvesDAO(Context context) {
         Log.d(TAG, "ProductDataSource erzeugt den DBhelper");
@@ -53,25 +53,25 @@ public class BookshelvesDAO {
 
 
         ContentValues values = new ContentValues();
-        values.put(BooxDbHelper.C_TITLE, title);
-        values.put(BooxDbHelper.C_ACCESS, access);
-        values.put(BooxDbHelper.C_DESCRIPTION, description);
-        values.put(BooxDbHelper.C_CREATED, created);
-        values.put(BooxDbHelper.C_UPDATED, updated);
-        values.put(BooxDbHelper.C_SELFLINK, selflink);
-        values.put(BooxDbHelper.C_VOLUME_COUNT, volumeCount);
+        values.put(BooxDbHelper.C_BOOKSHELVES_TITLE, title);
+        values.put(BooxDbHelper.C_BOOKSHELVES_ACCESS, access);
+        values.put(BooxDbHelper.C_BOOKSHELVES_DESCRIPTION, description);
+        values.put(BooxDbHelper.C_BOOKSHELVES_CREATED, created);
+        values.put(BooxDbHelper.C_BOOKSHELVES_UPDATED, updated);
+        values.put(BooxDbHelper.C_BOOKSHELVES_SELFLINK, selflink);
+        values.put(BooxDbHelper.C_BOOKSHELVES_VOLUME_COUNT, volumeCount);
 
 
         if (searchBookshelf(id)!= null){
             //modify existing bookshelf
             database.update(BooxDbHelper.T_BOOKSHELVES,
                     values,
-                    BooxDbHelper.C_ID + "=" + id,
+                    BooxDbHelper.C_BOOKSHELVES_ID + "=" + id,
                     null);
             Log.d(TAG, "createBookshelf: modified: ");
         }else {
             //create new bookshelf
-            values.put(BooxDbHelper.C_ID, id);
+            values.put(BooxDbHelper.C_BOOKSHELVES_ID, id);
             database.insert(BooxDbHelper.T_BOOKSHELVES, null, values);
             Log.d(TAG, "createBookshelf: created: ");
 
@@ -79,7 +79,7 @@ public class BookshelvesDAO {
 
 
         Cursor cursor = database.query(BooxDbHelper.T_BOOKSHELVES,
-                columns, BooxDbHelper.C_ID + "=" + id,
+                columns, BooxDbHelper.C_BOOKSHELVES_ID + "=" + id,
                 null, null, null, null);
         cursor.moveToFirst();
         Bookshelf bookshelf= cursorToBookshelf(cursor);
@@ -96,25 +96,25 @@ public class BookshelvesDAO {
 
 
         ContentValues values = new ContentValues();
-        values.put(BooxDbHelper.C_TITLE, bookshelf.getTitle());
-        values.put(BooxDbHelper.C_ACCESS, bookshelf.getAccess());
-        values.put(BooxDbHelper.C_DESCRIPTION, bookshelf.getDescription());
-        values.put(BooxDbHelper.C_CREATED, bookshelf.getCreated().getValue());
-        values.put(BooxDbHelper.C_UPDATED, bookshelf.getUpdated().getValue());
-        values.put(BooxDbHelper.C_SELFLINK, bookshelf.getSelfLink());
-        values.put(BooxDbHelper.C_VOLUME_COUNT, bookshelf.getVolumeCount());
+        values.put(BooxDbHelper.C_BOOKSHELVES_TITLE, bookshelf.getTitle());
+        values.put(BooxDbHelper.C_BOOKSHELVES_ACCESS, bookshelf.getAccess());
+        values.put(BooxDbHelper.C_BOOKSHELVES_DESCRIPTION, bookshelf.getDescription());
+        values.put(BooxDbHelper.C_BOOKSHELVES_CREATED, bookshelf.getCreated().getValue());
+        values.put(BooxDbHelper.C_BOOKSHELVES_UPDATED, bookshelf.getUpdated().getValue());
+        values.put(BooxDbHelper.C_BOOKSHELVES_SELFLINK, bookshelf.getSelfLink());
+        values.put(BooxDbHelper.C_BOOKSHELVES_VOLUME_COUNT, bookshelf.getVolumeCount());
 
 //TODO modify only when updated value of new shelf is different from stored shelf
         if (searchBookshelf(bookshelf.getId())!= null){
             //modify existing bookshelf
             database.update(BooxDbHelper.T_BOOKSHELVES,
                     values,
-                    BooxDbHelper.C_ID + "=" + bookshelf.getId(),
+                    BooxDbHelper.C_BOOKSHELVES_ID + "=" + bookshelf.getId(),
                     null);
             Log.d(TAG, "createBookshelf: modified: ");
         }else {
             //create new bookshelf
-            values.put(BooxDbHelper.C_ID, bookshelf.getId());
+            values.put(BooxDbHelper.C_BOOKSHELVES_ID, bookshelf.getId());
             database.insert(BooxDbHelper.T_BOOKSHELVES, null, values);
             Log.d(TAG, "createBookshelf: created: ");
 
@@ -122,7 +122,7 @@ public class BookshelvesDAO {
 
 
         Cursor cursor = database.query(BooxDbHelper.T_BOOKSHELVES,
-                columns, BooxDbHelper.C_ID + "=" + bookshelf.getId(),
+                columns, BooxDbHelper.C_BOOKSHELVES_ID + "=" + bookshelf.getId(),
                 null, null, null, null);
         cursor.moveToFirst();
         Bookshelf bs= cursorToBookshelf(cursor);
@@ -136,14 +136,14 @@ public class BookshelvesDAO {
     }
 
     private Bookshelf cursorToBookshelf(Cursor cursor){
-        int columnIndexID = cursor.getColumnIndex(BooxDbHelper.C_ID);
-        int columnIndexTitle = cursor.getColumnIndex(BooxDbHelper.C_TITLE);
-        int columnIndexAccess = cursor.getColumnIndex(BooxDbHelper.C_ACCESS);
-        int columnIndexDescription = cursor.getColumnIndex(BooxDbHelper.C_DESCRIPTION);
-        int columnIndexCreated = cursor.getColumnIndex(BooxDbHelper.C_CREATED);
-        int columnIndexUpdated = cursor.getColumnIndex(BooxDbHelper.C_UPDATED);
-        int columnIndexSelflink = cursor.getColumnIndex(BooxDbHelper.C_SELFLINK);
-        int columnIndexVolumeCount = cursor.getColumnIndex(BooxDbHelper.C_VOLUME_COUNT);
+        int columnIndexID = cursor.getColumnIndex(BooxDbHelper.C_BOOKSHELVES_ID);
+        int columnIndexTitle = cursor.getColumnIndex(BooxDbHelper.C_BOOKSHELVES_TITLE);
+        int columnIndexAccess = cursor.getColumnIndex(BooxDbHelper.C_BOOKSHELVES_ACCESS);
+        int columnIndexDescription = cursor.getColumnIndex(BooxDbHelper.C_BOOKSHELVES_DESCRIPTION);
+        int columnIndexCreated = cursor.getColumnIndex(BooxDbHelper.C_BOOKSHELVES_CREATED);
+        int columnIndexUpdated = cursor.getColumnIndex(BooxDbHelper.C_BOOKSHELVES_UPDATED);
+        int columnIndexSelflink = cursor.getColumnIndex(BooxDbHelper.C_BOOKSHELVES_SELFLINK);
+        int columnIndexVolumeCount = cursor.getColumnIndex(BooxDbHelper.C_BOOKSHELVES_VOLUME_COUNT);
 
         Bookshelf bookshelf = new Bookshelf();
         bookshelf.setId(cursor.getInt(columnIndexID));
@@ -160,7 +160,7 @@ public class BookshelvesDAO {
 
     public Bookshelf searchBookshelf(int shelfId){
         Bookshelf bookshelf = null;
-      Cursor cursor = database.query(BooxDbHelper.T_BOOKSHELVES,columns, BooxDbHelper.C_ID+ "="+shelfId,null, null, null, null);
+      Cursor cursor = database.query(BooxDbHelper.T_BOOKSHELVES,columns, BooxDbHelper.C_BOOKSHELVES_ID + "="+shelfId,null, null, null, null);
         if (cursor.moveToFirst()){
             cursor.moveToFirst();
             bookshelf = cursorToBookshelf(cursor);

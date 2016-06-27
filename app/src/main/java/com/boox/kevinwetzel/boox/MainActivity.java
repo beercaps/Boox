@@ -73,10 +73,21 @@ public class MainActivity extends BaseCompatActivity
         });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                Log.d(TAG, "onDrawerClosed");
+                super.onDrawerClosed(drawerView);
+                fillNavigationDrawer();
+            }
+
+        };
+
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+
 
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -190,9 +201,6 @@ public class MainActivity extends BaseCompatActivity
 
           //new BooksFullSearchAsync(JacksonFactory.getDefaultInstance(), "Harry Potter").execute();
           new BooksGetBookshelvesAsync(JacksonFactory.getDefaultInstance(), super.getAccess_token(), this).execute();
-
-
-            fillNavigationDrawer();
 
 
         }

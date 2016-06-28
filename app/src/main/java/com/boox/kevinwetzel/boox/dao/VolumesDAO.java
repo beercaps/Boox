@@ -7,11 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.boox.kevinwetzel.boox.databases.BooxDbHelper;
-import com.google.api.services.books.model.Bookshelf;
 import com.google.api.services.books.model.Volume;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Kevinn on 26.06.2016.
@@ -25,7 +21,6 @@ public class VolumesDAO {
 
     private String[] columns = {
             BooxDbHelper.C_VOLUME_ID,
-            BooxDbHelper.C_VOLUME_BOOKSHELF,
             BooxDbHelper.C_VOLUME_ACCESS,
             BooxDbHelper.C_VOLUME_KIND,
             BooxDbHelper.C_VOLUME_DESCRIPTION,
@@ -54,11 +49,10 @@ public class VolumesDAO {
 
 
 
-    public Volume createVolume(Volume volume, int shelfId){
+    public Volume createVolume(Volume volume){
 
 
         ContentValues values = new ContentValues();
-        values.put(BooxDbHelper.C_VOLUME_BOOKSHELF, shelfId);
         values.put(BooxDbHelper.C_VOLUME_ACCESS, volume.getAccessInfo().getAccessViewStatus());
         values.put(BooxDbHelper.C_VOLUME_KIND, volume.getKind());
         values.put(BooxDbHelper.C_VOLUME_DESCRIPTION, volume.getVolumeInfo().getDescription());
@@ -67,23 +61,23 @@ public class VolumesDAO {
         values.put(BooxDbHelper.C_VOLUME_RATING, volume.getVolumeInfo().getAverageRating());
 
         if (searchVolume(volume.getId())!= null){
-            //modify existing bookshelf
-            database.update(BooxDbHelper.T_BOOKSHELVES,
+            //modify existing Volume
+            database.update(BooxDbHelper.T_VOLUME,
                     values,
-                    BooxDbHelper.C_BOOKSHELVES_ID + "=" + volume.getId(),
+                    BooxDbHelper.C_VOLUME_ID + "='" + volume.getId()+"'",
                     null);
-            Log.d(TAG, "createBookshelf: modified: ");
+            Log.d(TAG, "createVolume: modified: ");
         }else {
-            //create new bookshelf
-            values.put(BooxDbHelper.C_BOOKSHELVES_ID, volume.getId());
-            database.insert(BooxDbHelper.T_BOOKSHELVES, null, values);
-            Log.d(TAG, "createBookshelf: created: ");
+            //create new Volume
+            values.put(BooxDbHelper.C_VOLUME_ID, volume.getId());
+            database.insert(BooxDbHelper.T_VOLUME, null, values);
+            Log.d(TAG, "createVolume: created: ");
 
         }
 
 
-        Cursor cursor = database.query(BooxDbHelper.T_BOOKSHELVES,
-                columns, BooxDbHelper.C_BOOKSHELVES_ID + "=" + volume.getId(),
+        Cursor cursor = database.query(BooxDbHelper.T_VOLUME,
+                columns, BooxDbHelper.C_VOLUME_ID + "='" + volume.getId()+"'",
                 null, null, null, null);
         cursor.moveToFirst();
         Volume vol= cursorToVolume(cursor);
@@ -120,13 +114,14 @@ public class VolumesDAO {
     }
 
     public Volume searchVolume(String volumeID){
+        Log.d(TAG, "now searching volume");
         Volume volume = null;
-      Cursor cursor = database.query(BooxDbHelper.T_VOLUME,columns, BooxDbHelper.C_VOLUME_ID + "="+volumeID,null, null, null, null);
+      Cursor cursor = database.query(BooxDbHelper.T_VOLUME,columns, BooxDbHelper.C_VOLUME_ID + "= '"+volumeID+"'",null, null, null, null);
         if (cursor.moveToFirst()){
             cursor.moveToFirst();
             volume = cursorToVolume(cursor);
             cursor.close();
-            Log.d(TAG, "searchBooksheld ID"+ volume.getId()+ "Inhalt "+volume.toString());
+            Log.d(TAG, "searchVolume ID"+ volume.getId()+ "Inhalt "+volume.toString());
         }
         return volume;
 

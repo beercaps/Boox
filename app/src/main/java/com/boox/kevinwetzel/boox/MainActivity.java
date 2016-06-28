@@ -28,7 +28,9 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.books.model.Bookshelf;
+import com.google.api.services.books.model.Bookshelves;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -150,15 +152,6 @@ public class MainActivity extends BaseCompatActivity
     }
 
 
-    @Override
-    protected void signOut() {
-        Menu navView = navigationView.getMenu();
-        navView.clear();
-       // TODO reset menu (reinflate? refresh?)
-        super.signOut();
-
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -200,7 +193,14 @@ public class MainActivity extends BaseCompatActivity
 
 
           //new BooksFullSearchAsync(JacksonFactory.getDefaultInstance(), "Harry Potter").execute();
-          new BooksGetBookshelvesAsync(JacksonFactory.getDefaultInstance(), super.getAccess_token(), this).execute();
+           new BooksGetBookshelvesAsync(JacksonFactory.getDefaultInstance(), super.getAccess_token(), this).execute();
+
+            bookshelvesDAO.open();
+            for (Bookshelf shelf:bookshelvesDAO.getAllBookshelves()) {
+                new BooksGetVolumesFromBookshelfAsync(JacksonFactory.getDefaultInstance(),super.getAccess_token(), this).execute(shelf.getId());
+
+            }
+            bookshelvesDAO.close();
 
 
         }
@@ -239,6 +239,7 @@ public class MainActivity extends BaseCompatActivity
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+        finish();
 
     }
 

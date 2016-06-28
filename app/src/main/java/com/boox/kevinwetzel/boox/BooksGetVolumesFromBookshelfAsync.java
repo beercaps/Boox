@@ -15,6 +15,7 @@ import com.google.api.services.books.model.Volume;
 import com.google.api.services.books.model.Volumes;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Please start by reviewing the Google Books API documentation at:
@@ -47,25 +48,45 @@ public class BooksGetVolumesFromBookshelfAsync extends AsyncTask<Integer, Void, 
                 .setGoogleClientRequestInitializer(new BooksRequestInitializer(ApiKeys.BOOKS_API))
                 .build();
 
-        for (int i = 0; i < bookshelfId.length ; i++) {
+
+        for (int i = 0; i < bookshelfId.length; i++) {
+            Log.d(TAG, "queryVolumesFromBookshelf: Get Volumes for Bookshelf ID " + bookshelfId[i]);
             Books.Mylibrary.Bookshelves.Volumes.List listItem = books.mylibrary().bookshelves().volumes().list(String.valueOf(bookshelfId[i]));
             listItem.setOauthToken(oauthToken);
-            volumesList.add(listItem);
+
             Volumes volumes = listItem.execute();
 
-            for (Volume volume:volumes.getItems()) {
-               volDao.open();
-                Log.d(TAG, "Adding Volumes to DB");
-                volDao.createVolume(volume, bookshelfId[i]);
-                volDao.close();
+       /*     if (volumes !=null) {
+                volDao.open();
+                List<Volume> volList = volumes.getItems();
+                if (volList !=null) {
+                    for (int y = 0; y < volList.size(); y++) {
+
+                        Log.d(TAG, "Adding Volumes to DB");
+                        volDao.createVolume(volList.get(y));
+
+                    }
+                    volDao.close();
+                }
+            }
+*/
+
+            if (volumes != null) {
+                Log.d(TAG, "queryVolumesFromBookshelf: TOSTRING" + volumes.getItems().toString());
+                for (Volume volume : volumes.getItems()) {
+                    volDao.open();
+                    Log.d(TAG, "Adding Volumes to DB");
+                    volDao.createVolume(volume);
+                    volDao.close();
+                }
+
             }
 
-
         }
-
+    }
 
          
-        }
+
 
 
 

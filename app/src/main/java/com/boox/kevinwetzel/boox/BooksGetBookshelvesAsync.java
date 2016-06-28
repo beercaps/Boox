@@ -16,7 +16,7 @@ import com.google.api.services.books.model.Bookshelves;
  * http://code.google.com/apis/books/docs/getting_started.html
  */
 
-//TODO öffentliche bookshelves abfragen ->userid aus selflink extrahieren
+
 public class BooksGetBookshelvesAsync extends AsyncTask<Void, Void, Void> {
 
 

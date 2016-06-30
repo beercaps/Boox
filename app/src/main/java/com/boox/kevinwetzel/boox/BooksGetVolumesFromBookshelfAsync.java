@@ -9,13 +9,9 @@ import com.boox.kevinwetzel.boox.dao.VolumesDAO;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.services.books.Books;
 import com.google.api.services.books.BooksRequestInitializer;
-import com.google.api.services.books.model.Bookshelf;
-import com.google.api.services.books.model.Bookshelves;
 import com.google.api.services.books.model.Volume;
-import com.google.api.services.books.model.Volumes;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Please start by reviewing the Google Books API documentation at:
@@ -32,12 +28,14 @@ public class BooksGetVolumesFromBookshelfAsync extends AsyncTask<Integer, Void, 
     private static String oauthToken;
     private static final String TAG = BooksGetVolumesFromBookshelfAsync.class.getSimpleName();
     private VolumesDAO volDao;
+    private BookshelvesDAO bookshelvesDao;
     private ArrayList<Books.Mylibrary.Bookshelves.Volumes.List> volumesList;
 
     public BooksGetVolumesFromBookshelfAsync(JsonFactory jsonFactory, String oauthToken, Context context) {
         this.jsonFactory = jsonFactory;
         this.oauthToken = oauthToken;
         this.volDao = new VolumesDAO(context);
+        this.bookshelvesDao = new BookshelvesDAO(context);
     }
 
     private void queryVolumesFromBookshelf(JsonFactory jsonFactory, Integer[] bookshelfId) throws Exception {
@@ -50,40 +48,27 @@ public class BooksGetVolumesFromBookshelfAsync extends AsyncTask<Integer, Void, 
 
 
         for (int i = 0; i < bookshelfId.length; i++) {
-            Log.d(TAG, "queryVolumesFromBookshelf: Get Volumes for Bookshelf ID " + bookshelfId[i]);
-            Books.Mylibrary.Bookshelves.Volumes.List listItem = books.mylibrary().bookshelves().volumes().list(String.valueOf(bookshelfId[i]));
-            listItem.setOauthToken(oauthToken);
+            //check if the bookshelf contains volumes
+            bookshelvesDao.open();
+            int volCount = bookshelvesDao.searchBookshelf(bookshelfId[i]).getVolumeCount();
+            bookshelvesDao.close();
+            if (volCount > 0) {
+                Log.d(TAG, "queryVolumesFromBookshelf: Get Volumes for Bookshelf ID " + bookshelfId[i]);
+                Books.Mylibrary.Bookshelves.Volumes.List listItem = books.mylibrary().bookshelves().volumes().list(String.valueOf(bookshelfId[i]));
+                listItem.setOauthToken(oauthToken);
 
-            Volumes volumes = listItem.execute();
 
-       /*     if (volumes !=null) {
                 volDao.open();
-                List<Volume> volList = volumes.getItems();
-                if (volList !=null) {
-                    for (int y = 0; y < volList.size(); y++) {
-
-                        Log.d(TAG, "Adding Volumes to DB");
-                        volDao.createVolume(volList.get(y));
-
-                    }
-                    volDao.close();
-                }
-            }
-*/
-
-            if (volumes != null) {
-                Log.d(TAG, "queryVolumesFromBookshelf: TOSTRING" + volumes.getItems().toString());
-                for (Volume volume : volumes.getItems()) {
-                    volDao.open();
-                    Log.d(TAG, "Adding Volumes to DB");
+                for (Volume volume : listItem.execute().getItems()) {
                     volDao.createVolume(volume);
-                    volDao.close();
                 }
+                volDao.close();
 
             }
+        }
 
         }
-    }
+
 
          
 

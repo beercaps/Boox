@@ -165,7 +165,7 @@ public class BookshelvesDAO {
             cursor.moveToFirst();
             bookshelf = cursorToBookshelf(cursor);
             cursor.close();
-            Log.d(TAG, "searchBooksheld ID"+ bookshelf.getId()+ "Inhalt "+bookshelf.toString());
+            Log.d(TAG, "searchBookshelf ID "+ bookshelf.getId()+ "Inhalt "+bookshelf.toString());
         }
         return bookshelf;
 

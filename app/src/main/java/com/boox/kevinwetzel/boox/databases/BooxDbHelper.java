@@ -13,8 +13,7 @@ public class BooxDbHelper extends SQLiteOpenHelper {
     private static final String TAG = BooxDbHelper.class.getSimpleName();
 
     public  static   String DB_NAME = "default";
-    public static final int DB_VERSION = 5;
-
+    public static final int DB_VERSION = 7;
     public  static  final String T_BOOKSHELVES = "t_bookshelves";
     public  static  final String C_BOOKSHELVES_ID = "_id";          //PK
     public  static final String C_BOOKSHELVES_TITLE = "c_title";
@@ -38,7 +37,7 @@ public class BooxDbHelper extends SQLiteOpenHelper {
     // public  static  final String C_VOLUME_RATING = "c_rating";
 
     // RECOMMENDED INFO
-    public static final String C_VOLUME_RECOMMENDEDINFO_EXPLANATION = "c_recommendedinfo_explanation"; //STRING
+    public static final String C_VOLUME_RECOMMENDEDINFO_EXPLANATION = "c_recommendedinfo_explanation";                              //STRING
 
     //SALE INFO
     public static final String C_VOLUME_SALEINFO_BUYLINK                        = "c_volume_saleinfo_buylink";                      //STRING
@@ -117,12 +116,41 @@ public class BooxDbHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + T_VOLUME +
                     "(" +
                     C_VOLUME_ID + " TEXT PRIMARY KEY, " +
-                    C_VOLUME_TITLE + " TEXT NOT NULL, " +
-                    C_VOLUME_ACCESS + " TEXT NOT NULL, " +
-                    C_VOLUME_DESCRIPTION + " TEXT, " +
-                    C_VOLUME_RATING + " INTEGER, " +
+                    C_VOLUME_ACCESS + " TEXT, " +
                     C_VOLUME_KIND + " TEXT, " +
-                    C_VOLUME_SUBTITLE + " TEXT " +
+                    C_VOLUME_RECOMMENDEDINFO_EXPLANATION + " TEXT, " +
+                    C_VOLUME_SALEINFO_BUYLINK + " TEXT, " +
+                    C_VOLUME_SALEINFO_COUNTRY + " TEXT, " +
+                    C_VOLUME_SALEINFO_ISEBOOK + " Boolean, " +
+                    C_VOLUME_SEARCHINFO_TEXTSNIPPET + " TEXT, " +
+                    C_VOLUME_USERINFO_ENTITLEMENTTYPE + " INTEGER, " +
+                    C_VOLUME_USERINFO_ISINMYBOOKS + " Boolean, " +
+                    C_VOLUME_USERINFO_ISPREORDERED + " Boolean, " +
+                    C_VOLUME_USERINFO_ISPURCHASED + " Boolean, " +
+                    C_VOLUME_USERINFO_UPDATED + " INTEGER, " +
+                    C_VOLUME_VOLUMEINFO_CANONICALVOLUMELINK + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_DESCRIPTION + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_CONTENTVERSION + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_DIMENSIONS_HEIGHT + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_DIMENSIONS_THICKNESS + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_DIMENSIONS_WIDTH + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_IMAGELINKS_EXTRALARGE + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_IMAGELINKS_LARGE + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_IMAGELINKS_MEDIUM + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_IMAGELINKS_SMALL + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_IMAGELINKS_SMALLTHUMBNAIL + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_IMAGELINKS_THUMBNAIL + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_LANGUAGE + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_MAINCATEGORY + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_MATURITYRATING + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_PAGECOUNT + " Integer, " +
+                    C_VOLUME_VOLUMEINFO_PREVIEWLINK + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_PUBLISHEDDATE + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_PUBLISHER + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_RATINGSCOUNT + " Integer, " +
+                    C_VOLUME_VOLUMEINFO_TITLE + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_SUBTITLE + " TEXT, " +
+                    C_VOLUME_VOLUMEINFO_AVGRATING + " Integer " +
                     " );";
 
  /*   public static final String SQL_CREATE_VOLUME =

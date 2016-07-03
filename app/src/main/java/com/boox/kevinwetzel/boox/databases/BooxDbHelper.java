@@ -13,7 +13,11 @@ public class BooxDbHelper extends SQLiteOpenHelper {
     private static final String TAG = BooxDbHelper.class.getSimpleName();
 
     public  static   String DB_NAME = "default";
-    public static final int DB_VERSION = 7;
+    public static final int DB_VERSION = 13;
+
+    //----------------------------------------------------------------------------------------//
+    //                                          Bookshelves                                   //
+    //----------------------------------------------------------------------------------------//
     public  static  final String T_BOOKSHELVES = "t_bookshelves";
     public  static  final String C_BOOKSHELVES_ID = "_id";          //PK
     public  static final String C_BOOKSHELVES_TITLE = "c_title";
@@ -31,10 +35,6 @@ public class BooxDbHelper extends SQLiteOpenHelper {
     public  static  final String C_VOLUME_ID = "_id";                //PK
     public  static  final String C_VOLUME_ACCESS = "c_access";
     public  static  final String C_VOLUME_KIND = "c_kind";
-    // public  static  final String C_VOLUME_DESCRIPTION = "c_description";
-    // public  static  final String C_VOLUME_TITLE = "c_title";
-    // public  static  final String C_VOLUME_SUBTITLE = "c_subtitle";
-    // public  static  final String C_VOLUME_RATING = "c_rating";
 
     // RECOMMENDED INFO
     public static final String C_VOLUME_RECOMMENDEDINFO_EXPLANATION = "c_recommendedinfo_explanation";                              //STRING
@@ -85,13 +85,11 @@ public class BooxDbHelper extends SQLiteOpenHelper {
     public static final String C_VOLUME_VOLUMEINFO_SUBTITLE                     = "c_volume_volumeinfo_subtitle";                   //STRING
     public static final String C_VOLUME_VOLUMEINFO_AVGRATING                    = "c_volume_volumeinfo_avgrating";                  //DOUBLE
     //public static final String C_VOLUME_VOLUMEINFO_CATEGORIES          EXTRA TABLE!!
-    // public static final String C_VOLUME_VOLUMEINFO_AUTHORS            EXTRA TABLE!!
+    //public static final String C_VOLUME_VOLUMEINFO_AUTHORS            EXTRA TABLE!!
 
-
-
-//----------------------------------------------------------------------------------------//
-
-
+    //----------------------------------------------------------------------------------------//
+    //                              Bookshelves Volumes association                           //
+    //----------------------------------------------------------------------------------------//
     public static final String T_BOOKSHELVES_VOLUMES_ASSOCIATION = "t_bookshelves_volumes_association";
     public static final String C_BOOKSHELVES_VOLUMES_ASSOCIATION_BOOKSHELVES_ID ="c_bookshelves_id";
     public static final String C_BOOKSHELVES_VOLUMES_ASSOCIATION_VOLUME_ID ="c_volume_id";
@@ -153,18 +151,17 @@ public class BooxDbHelper extends SQLiteOpenHelper {
                     C_VOLUME_VOLUMEINFO_AVGRATING + " Integer " +
                     " );";
 
- /*   public static final String SQL_CREATE_VOLUME =
-            "CREATE TABLE " + T_VOLUME +
+
+    public static final String SQL_CREATE_BOOKSHELVES_VOLUMES_ASSOCIATION =
+            "CREATE TABLE " + T_BOOKSHELVES_VOLUMES_ASSOCIATION +
                     "(" +
-                    C_VOLUME_ID + " String PRIMARY KEY, " +
-                    C_VOLUME_TITLE + " TEXT NOT NULL, " +
-                    C_VOLUME_ACCESS + " TEXT NOT NULL, " +
-                    C_VOLUME_DESCRIPTION + " TEXT , " +
-                    C_VOLUME_RATING + " INTEGER , " +
-                    C_VOLUME_KIND + " TEXT , " +
-                    C_VOLUME_SUBTITLE + " TEXT, " +
-                    "FOREIGN KEY "+C_VOLUME_BOOKSHELF + " REFERENCES " +T_BOOKSHELVES+"("+C_BOOKSHELVES_ID+")"+
-                    " );";*/
+                    C_BOOKSHELVES_VOLUMES_ASSOCIATION_BOOKSHELVES_ID + " INTEGER, " +
+                    C_BOOKSHELVES_VOLUMES_ASSOCIATION_VOLUME_ID + " TEXT," +
+                    "PRIMARY KEY( "+C_BOOKSHELVES_VOLUMES_ASSOCIATION_BOOKSHELVES_ID+", "+
+                                    C_BOOKSHELVES_VOLUMES_ASSOCIATION_VOLUME_ID+"),"+
+                    "FOREIGN KEY("+ C_BOOKSHELVES_VOLUMES_ASSOCIATION_BOOKSHELVES_ID+ ") REFERENCES "+ T_BOOKSHELVES+"("+C_BOOKSHELVES_ID+"),"+
+                    "FOREIGN KEY("+ C_BOOKSHELVES_VOLUMES_ASSOCIATION_VOLUME_ID+ ") REFERENCES "+ T_VOLUME+"("+C_VOLUME_ID+")"+
+                    " );";
     
 
     public BooxDbHelper(Context context) {
@@ -176,9 +173,11 @@ public class BooxDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         Log.d(TAG, "Die Datenbanktabellen werden mit SQL-Befehl: "+ SQL_CREATE_BOOKSHELVES + "angelegt");
         Log.d(TAG, "Die Datenbanktabellen werden mit SQL-Befehl: "+ SQL_CREATE_VOLUME + "angelegt");
+        Log.d(TAG, "Die Datenbanktabellen werden mit SQL-Befehl: "+ SQL_CREATE_BOOKSHELVES_VOLUMES_ASSOCIATION + "angelegt");
         try {
             sqLiteDatabase.execSQL(SQL_CREATE_BOOKSHELVES);
             sqLiteDatabase.execSQL(SQL_CREATE_VOLUME);
+            sqLiteDatabase.execSQL(SQL_CREATE_BOOKSHELVES_VOLUMES_ASSOCIATION);
 
 
         }catch (SQLException e){
@@ -192,8 +191,8 @@ public class BooxDbHelper extends SQLiteOpenHelper {
         try {
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ BooxDbHelper.T_BOOKSHELVES);
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ BooxDbHelper.T_VOLUME);
-            sqLiteDatabase.execSQL(SQL_CREATE_BOOKSHELVES);
-            sqLiteDatabase.execSQL(SQL_CREATE_VOLUME);
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+ BooxDbHelper.T_BOOKSHELVES_VOLUMES_ASSOCIATION);
+            onCreate(sqLiteDatabase);
         } catch (SQLException e) {
             e.printStackTrace();
         }

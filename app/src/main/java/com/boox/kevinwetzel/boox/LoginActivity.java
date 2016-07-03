@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 
+import com.boox.kevinwetzel.boox.asyncTasks.GenerateAsyncToken;
 import com.boox.kevinwetzel.boox.databases.BooxDbHelper;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;

@@ -34,12 +34,10 @@ public class BookshelvesDAO {
             BooxDbHelper.C_BOOKSHELVES_VOLUME_COUNT};
 
     public BookshelvesDAO(Context context) {
-        Log.d(TAG, "ProductDataSource erzeugt den DBhelper");
         this.booxDbHelper = new BooxDbHelper(context);
        }
 
     public void open(){
-        Log.d(TAG, "Eine Referenz auf die Datenbank wird jetzt angefragt.");
         database = booxDbHelper.getWritableDatabase();
         Log.d(TAG, "Datenbank-Referenz erhalten. Pfad zur Datenbank: " + database.getPath());
     }

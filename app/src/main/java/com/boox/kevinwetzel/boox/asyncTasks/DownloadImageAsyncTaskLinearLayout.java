@@ -1,11 +1,10 @@
-package com.boox.kevinwetzel.boox;
+package com.boox.kevinwetzel.boox.asyncTasks;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.io.InputStream;

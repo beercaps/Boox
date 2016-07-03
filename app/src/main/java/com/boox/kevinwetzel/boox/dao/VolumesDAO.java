@@ -10,6 +10,9 @@ import com.boox.kevinwetzel.boox.databases.BooxDbHelper;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.books.model.Volume;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Kevinn on 26.06.2016.
  */
@@ -19,6 +22,7 @@ public class VolumesDAO {
 
     private SQLiteDatabase database;
     private BooxDbHelper booxDbHelper;
+    private BookshelvesVolumesAssocDAO bookshelvesVolumesAssocDAO;
 
     private String[] columns = {
             BooxDbHelper.C_VOLUME_ID,
@@ -63,12 +67,11 @@ public class VolumesDAO {
 
 
     public VolumesDAO(Context context) {
-        Log.d(TAG, "ProductDataSource erzeugt den DBhelper");
         this.booxDbHelper = new BooxDbHelper(context);
+        this.bookshelvesVolumesAssocDAO = new BookshelvesVolumesAssocDAO(context);
        }
 
     public void open(){
-        Log.d(TAG, "Eine Referenz auf die Datenbank wird jetzt angefragt.");
         database = booxDbHelper.getWritableDatabase();
         Log.d(TAG, "Datenbank-Referenz erhalten. Pfad zur Datenbank: " + database.getPath());
     }
@@ -80,7 +83,7 @@ public class VolumesDAO {
 
 
 
-    public Volume createVolume(Volume volume){
+    public Volume createVolume(Volume volume, int bookshelfId){
 
 
         ContentValues values = new ContentValues();
@@ -128,10 +131,6 @@ public class VolumesDAO {
             values.put(BooxDbHelper.C_VOLUME_VOLUMEINFO_AVGRATING, volume.getVolumeInfo().getAverageRating());
         }
 
-/*        values.put(BooxDbHelper.C_VOLUME_DESCRIPTION, volume.getVolumeInfo().getDescription());
-        values.put(BooxDbHelper.C_VOLUME_TITLE, volume.getVolumeInfo().getTitle());
-        values.put(BooxDbHelper.C_VOLUME_SUBTITLE, volume.getVolumeInfo().getSubtitle());
-        values.put(BooxDbHelper.C_VOLUME_RATING, volume.getVolumeInfo().getAverageRating());*/
 
         if (searchVolume(volume.getId())!= null){
             //modify existing Volume
@@ -144,7 +143,11 @@ public class VolumesDAO {
             //create new Volume
             values.put(BooxDbHelper.C_VOLUME_ID, volume.getId());
             database.insert(BooxDbHelper.T_VOLUME, null, values);
+            bookshelvesVolumesAssocDAO.open();
+            bookshelvesVolumesAssocDAO.createBookshelfVolumeAssoc(bookshelfId, volume.getId());
+            bookshelvesVolumesAssocDAO.close();
             Log.d(TAG, "createVolume: created: ");
+
 
         }
 
@@ -202,15 +205,6 @@ public class VolumesDAO {
         int columnVolumeinfoAVGRating                   = cursor.getColumnIndex(BooxDbHelper.C_VOLUME_VOLUMEINFO_AVGRATING);
 
 
-
-
-/*        int columnIndexTitle = cursor.getColumnIndex(BooxDbHelper.C_VOLUME_TITLE);
-        int columnIndexSubtitle = cursor.getColumnIndex(BooxDbHelper.C_VOLUME_SUBTITLE);
-        int columnIndexAccess = cursor.getColumnIndex(BooxDbHelper.C_VOLUME_ACCESS);
-        int columnIndexDescription = cursor.getColumnIndex(BooxDbHelper.C_VOLUME_DESCRIPTION);
-        int columnIndexKind = cursor.getColumnIndex(BooxDbHelper.C_VOLUME_KIND);
-        int columnIndexRating = cursor.getColumnIndex(BooxDbHelper.C_VOLUME_RATING);*/
-
         Volume volume = new Volume();
         Volume.SaleInfo saleInfo = new Volume.SaleInfo();
         Volume.UserInfo userInfo = new Volume.UserInfo();
@@ -265,14 +259,6 @@ public class VolumesDAO {
         volumeInfo.setAverageRating(cursor.getDouble(columnVolumeinfoAVGRating));
         volume.setVolumeInfo(volumeInfo);
 
-        /*volume.setVolumeInfo(new Volume.VolumeInfo().setTitle(cursor.getString(columnIndexTitle)));
-        volume.setAccessInfo(new Volume.AccessInfo().setAccessViewStatus(cursor.getString(columnIndexAccess)));
-        volume.setVolumeInfo(new Volume.VolumeInfo().setDescription(cursor.getString(columnIndexDescription)));
-        volume.setVolumeInfo(new Volume.VolumeInfo().setSubtitle(cursor.getString(columnIndexSubtitle)));
-        volume.setKind(cursor.getString(columnIndexKind));
-        volume.setVolumeInfo(new Volume.VolumeInfo().setAverageRating(cursor.getDouble(columnIndexRating)));*/
-
-
         return volume;
     }
 
@@ -290,21 +276,40 @@ public class VolumesDAO {
 
     }
 
-    //TODO getAllVolumes
-//    public List<Bookshelf>getAllBookshelves(){
-//        List<Bookshelf> bookshelfList = new ArrayList<>();
-//        Cursor cursor = database.query(BooxDbHelper.T_BOOKSHELVES,
-//                columns, null, null, null, null, null );
-//        cursor.moveToFirst();
-//        Bookshelf bookshelf;
-//
-//        while (!cursor.isAfterLast()){
-//            bookshelf = cursorToVolume(cursor);
-//            bookshelfList.add(bookshelf);
-//            Log.d(TAG, "getAllBookshelves ID: "+bookshelf.getId()+ " Inhalt: "+bookshelf.toString());
-//            cursor.moveToNext();
-//        }
-//        cursor.close();
-//        return bookshelfList;
-//    }
+    public List<Volume> searchVolume(List<String> volumeID){
+        List<Volume> volumeList = new ArrayList<>();
+        Log.d(TAG, "searchVolume: size List of volumeIds: "+ volumeID.size());
+        if (volumeID.size()>0) {
+            Log.d(TAG, "now searching volume");
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i <volumeID.size() ; i++) {
+                sb.append("'");
+                sb.append(volumeID.get(i));
+                sb.append("'");
+                //beim letzten durchlauf darf kein komma mehr angehängt werden
+                if (i < volumeID.size()-1) {
+                    sb.append(",");
+                }
+
+
+            }
+            String volumeIdInParam =  sb.toString();
+
+
+            Log.d(TAG, "searchVolume: ArrayList " + volumeIdInParam);
+            Cursor cursor = database.query(BooxDbHelper.T_VOLUME, columns, BooxDbHelper.C_VOLUME_ID + " IN (" + volumeIdInParam+")" , null, null, null, null);
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                volumeList.add(cursorToVolume(cursor));
+                Log.d(TAG, "searchVolume: Volume "+ cursorToVolume(cursor).toString());
+                cursor.moveToNext();
+            }
+            cursor.close();
+        }
+        return volumeList;
+
+    }
+
 }

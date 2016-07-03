@@ -21,16 +21,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
+import com.boox.kevinwetzel.boox.asyncTasks.BooksGetBookshelvesAsync;
+import com.boox.kevinwetzel.boox.asyncTasks.BooksGetVolumesFromBookshelfAsync;
+import com.boox.kevinwetzel.boox.asyncTasks.DownloadImageAsyncTaskLinearLayout;
+import com.boox.kevinwetzel.boox.asyncTasks.DownloadImageAsynctaskImageViewRound;
 import com.boox.kevinwetzel.boox.dao.BookshelvesDAO;
+import com.boox.kevinwetzel.boox.dao.BookshelvesVolumesAssocDAO;
+import com.boox.kevinwetzel.boox.dao.VolumesDAO;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.books.model.Bookshelf;
-import com.google.api.services.books.model.Bookshelves;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -146,10 +150,14 @@ public class MainActivity extends BaseCompatActivity
 
         switch (id){
             case R.id.action_sign_out: signOut(); break;
+            case R.id.action_get_volumes: getVolumesTest();break;
+            case R.id.action_saveVolumesFromBookshelves: saveVolumesFromBookshelvesTest();break;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -195,20 +203,34 @@ public class MainActivity extends BaseCompatActivity
           //new BooksFullSearchAsync(JacksonFactory.getDefaultInstance(), "Harry Potter").execute();
            new BooksGetBookshelvesAsync(JacksonFactory.getDefaultInstance(), super.getAccess_token(), this).execute();
 
-            bookshelvesDAO.open();
-            for (Bookshelf shelf:bookshelvesDAO.getAllBookshelves()) {
-                new BooksGetVolumesFromBookshelfAsync(JacksonFactory.getDefaultInstance(),super.getAccess_token(), this).execute(shelf.getId());
 
-            }
-            bookshelvesDAO.close();
 
 
         }
+    }
 
+    // TODO: 03.07.2016  just for testing -->delete method when threads synchronized
+    private void getVolumesTest() {
+        bookshelvesDAO.open();
+        for (Bookshelf shelf:bookshelvesDAO.getAllBookshelves()) {
 
-       
-       
-
+            BookshelvesVolumesAssocDAO bookshelvesVolumesAssocDAO = new BookshelvesVolumesAssocDAO(this);
+            bookshelvesVolumesAssocDAO.open();
+            VolumesDAO volumesDAO = new VolumesDAO(this);
+            volumesDAO.open();
+            volumesDAO.searchVolume(bookshelvesVolumesAssocDAO.getAllVolumeIDsForBookshelf(shelf.getId()));
+            volumesDAO.close();
+            bookshelvesVolumesAssocDAO.close();
+        }
+        bookshelvesDAO.close();
+    }
+    // TODO: 03.07.2016  just for testing -->delete method when threads synchronized
+    private void saveVolumesFromBookshelvesTest(){
+        bookshelvesDAO.open();
+        for (Bookshelf shelf:bookshelvesDAO.getAllBookshelves()) {
+            new BooksGetVolumesFromBookshelfAsync(JacksonFactory.getDefaultInstance(),super.getAccess_token(), this).execute(shelf.getId());
+        }
+        bookshelvesDAO.close();
 
     }
     

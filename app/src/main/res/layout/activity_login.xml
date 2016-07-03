@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Log in with Google"
+            android:text="Sign in with Google"
             android:id="@+id/tv_login_google"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="78dp"
@@ -33,26 +33,6 @@
             android:layout_marginTop="32dp"
             android:layout_below="@+id/tv_login_google"
             android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="or continue and store data locally"
-            android:id="@+id/tv_locally"
-            android:layout_gravity="center_horizontal"
-            android:layout_below="@+id/bt_sign_in"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="88dp" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Store locally"
-            android:id="@+id/bt_store_locally"
-            android:layout_marginTop="31dp"
-            android:layout_below="@+id/tv_locally"
-            android:layout_alignStart="@+id/bt_sign_in" />
 
     </RelativeLayout>
 

@@ -1,4 +1,4 @@
-package com.boox.kevinwetzel.boox;
+package com.boox.kevinwetzel.boox.asyncTasks;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

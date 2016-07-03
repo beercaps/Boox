@@ -1,9 +1,10 @@
-package com.boox.kevinwetzel.boox;
+package com.boox.kevinwetzel.boox.asyncTasks;
 
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.boox.kevinwetzel.boox.BaseCompatActivity;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -22,7 +23,7 @@ public class GenerateAsyncToken extends AsyncTask<Void, Void, Void> {
         private String mScope;
         private String mEmail;
 
-    GenerateAsyncToken(Activity activity, String email, String scope) {
+    public GenerateAsyncToken(Activity activity, String email, String scope) {
         this.mActivity = activity;
         this.mScope = scope;
         this.mEmail = email;

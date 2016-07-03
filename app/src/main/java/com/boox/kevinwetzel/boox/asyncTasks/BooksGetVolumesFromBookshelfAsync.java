@@ -1,9 +1,10 @@
-package com.boox.kevinwetzel.boox;
+package com.boox.kevinwetzel.boox.asyncTasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.boox.kevinwetzel.boox.ApiKeys;
 import com.boox.kevinwetzel.boox.dao.BookshelvesDAO;
 import com.boox.kevinwetzel.boox.dao.VolumesDAO;
 import com.google.api.client.json.JsonFactory;
@@ -60,7 +61,7 @@ public class BooksGetVolumesFromBookshelfAsync extends AsyncTask<Integer, Void, 
 
                 volDao.open();
                 for (Volume volume : listItem.execute().getItems()) {
-                    volDao.createVolume(volume);
+                    volDao.createVolume(volume,bookshelfId[i]);
                 }
                 volDao.close();
 
